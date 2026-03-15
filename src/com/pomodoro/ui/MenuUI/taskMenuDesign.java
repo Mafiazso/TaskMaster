@@ -27,9 +27,8 @@ public class taskMenuDesign extends JPanel {
 
     private TaskManager taskManager;
     private TaskTableModel tableModel;
-    private pomodoroTimer pomodoro; // เพิ่มตัวแปร pomodoro กลับมา
+    private pomodoroTimer pomodoro;
 
-    // เพิ่ม PomodoroTimer เข้ามารับค่าใน Constructor
     public taskMenuDesign(TaskManager taskManager, pomodoroTimer pomodoro) {
         this.taskManager = taskManager;
         this.pomodoro = pomodoro;
@@ -458,8 +457,6 @@ public class taskMenuDesign extends JPanel {
         sortBtnPanel.add(sortCateBtn);
 
     }
-
-    // ตัวช่วยอื่นๆ
 
     private Task getSelectedTask(JTable table) {
         int row = table.getSelectedRow();

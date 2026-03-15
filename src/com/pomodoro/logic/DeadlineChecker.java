@@ -5,14 +5,12 @@ import com.pomodoro.model.TaskStatus;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 // ตัวตรวจสอบและแจ้งเตือนเวลางานถึงกำหนด แยกออกมาเพื่อให้หน้าตั้งค่าเปิดปิดได้ง่าย
 public class DeadlineChecker {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     private static final List<String> alertedTaskIds = new ArrayList<String>();
 
     // เปลี่ยนให้คืนค่าข้อมูลงาน พร้อมกับ "ระยะเวลา (Stage)" ที่แจ้งเตือน
@@ -36,7 +34,7 @@ public class DeadlineChecker {
             }
 
             if (t.getReminderTime() == null) {
-                // ถ้าไม่มี ReminderTime ให้เช็คข้ามวันจาก DueDate (โค้ดเดิม)
+                // ถ้าไม่มี ReminderTime ให้เช็คข้ามวันจาก DueDate
                 if (t.getDueDate() != null) {
                     java.util.Calendar cal = java.util.Calendar.getInstance();
                     cal.setTime(t.getDueDate());
