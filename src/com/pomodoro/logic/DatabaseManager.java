@@ -33,6 +33,7 @@ public class DatabaseManager {
                     )
                 """);
 
+        // ตารางงาน
         stmt.execute("""
                     CREATE TABLE IF NOT EXISTS tasks (
                         id TEXT PRIMARY KEY,

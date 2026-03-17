@@ -4,18 +4,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
-import java.awt.FlowLayout;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.Point;
+
+import com.pomodoro.logic.ExportFile;
 import com.pomodoro.logic.TaskManager;
 import com.pomodoro.model.Task;
 import com.pomodoro.model.TaskStatus;
@@ -111,8 +121,8 @@ public class taskMenuDesign extends JPanel {
 
         // เมื่อกดเลือกที่งานระบบจะนำข้อมูลมาแสดงในหน้าต่างรายละเอียดด้านล่าง
         JTable rawTable = tableModel.getTable();
-        rawTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+        rawTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     int selectedRow = rawTable.getSelectedRow();
                     Task selected = tableModel.getTaskAt(selectedRow);
@@ -140,13 +150,13 @@ public class taskMenuDesign extends JPanel {
 
                         if (selected.getDueDate() != null) {
                             dueDateTitle.setText(
-                                    new java.text.SimpleDateFormat("dd/MM/yyyy").format(selected.getDueDate()));
+                                    new SimpleDateFormat("dd/MM/yyyy").format(selected.getDueDate()));
                         } else {
                             dueDateTitle.setText("-");
                         }
 
                         if (selected.getReminderTime() != null) {
-                            notiTitle.setText(new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm")
+                            notiTitle.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm")
                                     .format(selected.getReminderTime()));
                         } else {
                             notiTitle.setText("-");
@@ -179,7 +189,7 @@ public class taskMenuDesign extends JPanel {
         JSeparator separator2 = new JSeparator();
         popupMenu.add(separator2);
         
-        javax.swing.JMenu menuSort = new javax.swing.JMenu("เรียงลำดับ...");
+        JMenu menuSort = new JMenu("เรียงลำดับ...");
         JMenuItem sortNameItem = new JMenuItem("เรียงตามชื่องาน (A-Z)");
         JMenuItem sortPriItem = new JMenuItem("เรียงตามความสำคัญ (High-Low)");
         JMenuItem sortDateItem = new JMenuItem("เรียงตามวันที่ครบกำหนด");
@@ -231,7 +241,7 @@ public class taskMenuDesign extends JPanel {
 
             private void handleViewportPopup(MouseEvent e) {
                 // แปลงตำแหน่งคลิกให้ตรงกับตารางเพื่อหาว่ากำลังคลิกตรงรายการไหน
-                java.awt.Point pt = javax.swing.SwingUtilities.convertPoint(
+                Point pt = SwingUtilities.convertPoint(
                         tableModel.getViewport(), e.getPoint(), rawTable);
                 int row = rawTable.rowAtPoint(pt);
                 if (row >= 0)
@@ -243,7 +253,7 @@ public class taskMenuDesign extends JPanel {
         // ผูกปุ่มเข้ากับคำสั่ง
         menuAddTask.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                java.awt.Frame pf = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(taskMenuDesign.this);
+                Frame pf = (Frame) SwingUtilities.getWindowAncestor(taskMenuDesign.this);
                 new addFormUI(pf, taskManager, new Runnable() {
                     public void run() {
                         tableModel.reloadTable();
@@ -256,10 +266,10 @@ public class taskMenuDesign extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 Task t = getSelectedTask(rawTable);
                 if (t == null) {
-                    javax.swing.JOptionPane.showMessageDialog(null, "กรุณาเลือกงานที่ต้องการแก้ไข");
+                    JOptionPane.showMessageDialog(null, "กรุณาเลือกงานที่ต้องการแก้ไข");
                     return;
                 }
-                java.awt.Frame pf = (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(taskMenuDesign.this);
+                Frame pf = (Frame) SwingUtilities.getWindowAncestor(taskMenuDesign.this);
                 new addFormUI(pf, taskManager, t, new Runnable() {
                     public void run() {
                         tableModel.reloadTable();
@@ -273,7 +283,7 @@ public class taskMenuDesign extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 Task t = getSelectedTask(rawTable);
                 if (t == null) {
-                    javax.swing.JOptionPane.showMessageDialog(null, "กรุณาเลือกงานที่ต้องการย้ายลงถังขยะ");
+                    JOptionPane.showMessageDialog(null, "กรุณาเลือกงานที่ต้องการย้ายลงถังขยะ");
                     return;
                 }
                 taskManager.moveToTrash(t);
@@ -345,7 +355,7 @@ public class taskMenuDesign extends JPanel {
 
 
         // ส่วนของฟอร์มกรอกรายละเอียดเวลาเพิ่มงาน
-        final java.awt.Frame parentFrame = (java.awt.Frame) javax.swing.SwingUtilities
+        final Frame parentFrame = (Frame) SwingUtilities
                 .getWindowAncestor(taskMenuDesign.this);
         addFormUI addForm = new addFormUI(parentFrame, taskManager, new Runnable() {
             public void run() {
@@ -387,25 +397,25 @@ public class taskMenuDesign extends JPanel {
         });
         actionBtnPanel.add(deleteBtn);
 
-        // *** ปุ่มส่งออกที่ทำงานได้จริง ***
+        // ปุ่มส่งออก
         JButton exportBtn = new JButton("ส่งออก");
         exportBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // ดึงข้อมูลทั้งหมดไปสร้างไฟล์ได้ทันที ไม่ต้องเลือกงานก่อน
-                String savedPath = com.pomodoro.logic.ExportFile.exportData(taskManager);
+                String savedPath = ExportFile.exportData(taskManager);
                 
                 if (savedPath != null) {
                     // ถ้าสำเร็จ ให้โชว์ที่อยู่ไฟล์แบบเต็มๆ
-                    javax.swing.JOptionPane.showMessageDialog(null, 
-                        "ส่งออกข้อมูลทั้งหมดสำเร็จ!\nไฟล์ถูกบันทึกไว้ที่:\n" + savedPath, 
-                        "Export Successful", 
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            		JOptionPane.showMessageDialog(null, 
+                    "ส่งออกข้อมูลทั้งหมดสำเร็จ!\nไฟล์ถูกบันทึกไว้ที่:\n" + savedPath, 
+                    "Export Successful", 
+                    JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     // ถ้าไม่สำเร็จ
-                    javax.swing.JOptionPane.showMessageDialog(null, 
-                        "เกิดข้อผิดพลาด ไม่สามารถส่งออกไฟล์ได้\nกรุณาตรวจสอบสิทธิ์การเขียนไฟล์", 
-                        "Export Error", 
-                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, 
+                    "เกิดข้อผิดพลาด ไม่สามารถส่งออกไฟล์ได้\nกรุณาตรวจสอบสิทธิ์การเขียนไฟล์", 
+                    "Export Error", 
+                    JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

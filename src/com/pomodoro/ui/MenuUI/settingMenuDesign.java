@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,7 +29,6 @@ public class settingMenuDesign extends JPanel {
 
     public settingMenuDesign(pomodoroTimer pomodoroTimer) {
         this.pomodoroTimer = pomodoroTimer;
-        SettingLogic logic = SettingLogic.getInstance(); 
 
         setBounds(113, 5, 601, 551);
         setLayout(null);
@@ -63,7 +63,7 @@ public class settingMenuDesign extends JPanel {
         JRadioButton p_Radio3 = new JRadioButton("Custom");
         pomoRadio.add(p_Radio3);
 
-        javax.swing.ButtonGroup pomoGroup = new javax.swing.ButtonGroup();
+        ButtonGroup pomoGroup = new ButtonGroup();
         pomoGroup.add(p_Radio1);
         pomoGroup.add(p_Radio2);
         pomoGroup.add(p_Radio3);
@@ -86,6 +86,7 @@ public class settingMenuDesign extends JPanel {
         focusSetting.add(focusLabel);
         
         focusField = new JTextField();
+        focusField.setEnabled(false);
         focusSetting.add(focusField);
         focusField.setColumns(10);
         
@@ -102,24 +103,24 @@ public class settingMenuDesign extends JPanel {
         
         JButton saveCustom = new JButton("Save");
         Setting.add(saveCustom);
-
-        focusField.setEnabled(false);
         breakField.setEnabled(false);
         saveCustom.setEnabled(false);
 
+        SettingLogic logic = SettingLogic.getInstance(); 
+        // Btn Action
         p_Radio1.addActionListener(e -> {
             focusField.setEnabled(false);
             breakField.setEnabled(false);
             saveCustom.setEnabled(false);
-            logic.setPomodoroTime(25, 5);
-            pomodoroTimer.setSettingsTime(logic.getWorkTimeSeconds(), logic.getBreakTimeSeconds());
+            logic.setPomodoroTime(25, 5); //ตั้งค่าเวลา
+            pomodoroTimer.setSettingsTime(logic.getWorkTimeSeconds(), logic.getBreakTimeSeconds()); //ตั้งค่าเวลาใน setting logic
         });
 
         p_Radio2.addActionListener(e -> {
             focusField.setEnabled(false);
             breakField.setEnabled(false);
             saveCustom.setEnabled(false);
-            logic.setPomodoroTime(50, 10);
+            logic.setPomodoroTime(50, 10); //ตั้งค่าเวลา
             pomodoroTimer.setSettingsTime(logic.getWorkTimeSeconds(), logic.getBreakTimeSeconds());
         });
 
@@ -140,6 +141,7 @@ public class settingMenuDesign extends JPanel {
                 JOptionPane.showMessageDialog(this, "กรุณากรอกเฉพาะตัวเลขเท่านั้น!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+        //-----
 
         // --- Notification Setting ---
         JPanel notiPanel = new JPanel();
@@ -159,24 +161,22 @@ public class settingMenuDesign extends JPanel {
         notiSetting.add(notiRadio);
         notiRadio.setLayout(new BoxLayout(notiRadio, BoxLayout.Y_AXIS));
         
-        JCheckBox checkbox1 = new JCheckBox("แจ้งเตือนเมื่อหมดเวลาทำงาน (Focus)");
-        notiRadio.add(checkbox1);
-        
         // เพิ่ม Checkbox สำหรับโหมดพักเบรก
+        JCheckBox checkboxFocus = new JCheckBox("แจ้งเตือนเมื่อหมดเวลาทำงาน (Focus)"); 
+        checkboxFocus.setSelected(true); // ติ๊ก = true , ไม่ติ๊ก = false
+        notiRadio.add(checkboxFocus);
+        
         JCheckBox checkboxBreak = new JCheckBox("แจ้งเตือนเมื่อหมดเวลาพักเบรก (Break)");
+        checkboxBreak.setSelected(true); // ติ๊ก = true , ไม่ติ๊ก = false
         notiRadio.add(checkboxBreak);
         
-        JCheckBox checkbox2 = new JCheckBox("แจ้งเตือนก่อนถึง Deadline (1 นาที)");
-        notiRadio.add(checkbox2);
-
-        // ตั้งค่า Checkbox ตาม Logic ปัจจุบัน
-        checkbox1.setSelected(logic.isNotifyPomodoroEnd());
-        checkboxBreak.setSelected(logic.isNotifyBreakEnd());
-        checkbox2.setSelected(logic.isNotifyDeadline());
+        JCheckBox checkboxDeadline = new JCheckBox("แจ้งเตือนก่อนถึง Deadline (1 นาที)");
+        checkboxDeadline.setSelected(true); // ติ๊ก = true , ไม่ติ๊ก = false
+        notiRadio.add(checkboxDeadline);
 
         // --- Logic การกด Checkbox ให้บันทึกลง SettingLogic แบบ Real-time ---
-        checkbox1.addActionListener(e -> logic.setNotifyPomodoroEnd(checkbox1.isSelected()));
+        checkboxFocus.addActionListener(e -> logic.setNotifyPomodoroEnd(checkboxFocus.isSelected()));
         checkboxBreak.addActionListener(e -> logic.setNotifyBreakEnd(checkboxBreak.isSelected()));
-        checkbox2.addActionListener(e -> logic.setNotifyDeadline(checkbox2.isSelected()));
+        checkboxDeadline.addActionListener(e -> logic.setNotifyDeadline(checkboxDeadline.isSelected()));
     }
 }

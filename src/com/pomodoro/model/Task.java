@@ -18,8 +18,8 @@ public abstract class Task{
 
     // - เปลี่ยนจาก minute เป็นทั้งนาทีและวินาที
     private int totalFocusTime;
-    // บันทึกเวลาที่เหลือไว้เผื่อกลับมาทำต่อ ถ้าเป็นลบหนึ่งแปลว่ายังไม่ได้เริ่มทำ
-
+    
+    // เป็นลบหนึ่งแปลว่ายังไม่ได้เริ่มทำ
     private int remainingSeconds = -1;
     // - เพิ่มโค้ดสำหรับเก็บค่า pomodoro
     private int completedPomodoro = 0;

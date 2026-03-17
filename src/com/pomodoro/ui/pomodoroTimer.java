@@ -40,6 +40,10 @@ public class pomodoroTimer extends JPanel {
     
     private Task currentTask;
     private TaskManager taskManager;
+    
+    // ============================================================
+    // UI Pomodoro
+    // ============================================================
 
     public pomodoroTimer(TaskManager taskManager) {
         
@@ -144,11 +148,17 @@ public class pomodoroTimer extends JPanel {
         timer = new Timer(1000, e -> updateTimer());
     }
     
+    // ============================================================
+    // LOGIC Pomodoro
+    // ============================================================
+    
     public void setSettingsTime(int workSeconds, int breakSeconds) {
         this.settingWorkTime = workSeconds;
         this.settingBreakTime = breakSeconds;
         
+        // ไม่อนุญาตให้เปลี่ยนเวลา เมื่อเวลาเดิน
         if (!timer.isRunning()) {
+        	// Ternary Operator --> condition ? value1 : value2
             currentTime = isWorkMode ? settingWorkTime : settingBreakTime;
             
             if (currentTask != null && isWorkMode) {
@@ -198,6 +208,9 @@ public class pomodoroTimer extends JPanel {
         updateDetailsLabels();
         
         if (currentTime == 0) {
+        	
+        	SettingLogic logic = SettingLogic.getInstance();
+        	
             timer.stop();
             
             if (isWorkMode) {
@@ -205,16 +218,17 @@ public class pomodoroTimer extends JPanel {
                     currentTask.setCompletedPomodoro(currentTask.getCompletedPomodoro() + 1);
                     currentTask.addFocusTime(totalTime);
                     currentTask.setRemainingSeconds(-1);
-                    currentTask.setLastTimeWork(System.currentTimeMillis());
+                    currentTask.setLastTimeWork(System.currentTimeMillis()); //--> ms
                     taskManager.updateTask(currentTask);
                     totalTime = 0;
                 }
                 
                 // ตรวจสอบตั้งค่าของ โหมดทำงาน
-                if (SettingLogic.getInstance().isNotifyPomodoroEnd()) {
+                if (logic.isNotifyPomodoroEnd()) {
                     JOptionPane.showMessageDialog(this, "หมดเวลาทำงาน! ได้เวลาพักเบรกแล้ว");
                 }
                 
+                // ตั้งค่าไปเป็น โหมดทำงาน
                 isWorkMode = false;
                 currentTime = settingBreakTime;
                 breakLabel.setText("โหมด: พักเบรก");
@@ -222,10 +236,11 @@ public class pomodoroTimer extends JPanel {
                 
             } else {
                 // ตรวจสอบตั้งค่าของ โหมดพักเบรก (แก้เป็น isNotifyBreakEnd)
-                if (SettingLogic.getInstance().isNotifyBreakEnd()) {
+                if (logic.isNotifyBreakEnd()) {
                     JOptionPane.showMessageDialog(this, "หมดเวลาพัก! ลุยงานต่อเลย");
                 }
                 
+                // ตั้งค่าไปเป็น โหมดพัก
                 isWorkMode = true;
                 currentTime = settingWorkTime;
                 breakLabel.setText("โหมด: ทำงาน");
@@ -240,7 +255,7 @@ public class pomodoroTimer extends JPanel {
     private void saveCurrentTime() {
         if (currentTask != null && isWorkMode) {
             currentTask.setRemainingSeconds(currentTime);
-            currentTask.setLastTimeWork(System.currentTimeMillis()); 
+            currentTask.setLastTimeWork(System.currentTimeMillis()); // -> ms
             
             currentTask.addFocusTime(totalTime); 
             taskManager.updateTask(currentTask);

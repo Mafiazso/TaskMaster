@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import com.pomodoro.logic.DeadlineChecker;
 import com.pomodoro.logic.TaskManager;
 import com.pomodoro.ui.MenuUI.trashMenuDesign;
 import com.pomodoro.ui.MenuUI.homeMenuDesign;
@@ -185,7 +186,7 @@ public class MainWindowDesign extends JFrame {
         timerPanel.add(pomodoro);
 
         // เริ่มระบบจับเวลาแจ้งเตือนในพื้นหลัง ให้เช็คเดดไลน์ต่อเนื่อง
-        com.pomodoro.logic.DeadlineChecker.startBackgroundChecker(sharedTaskManager);
+        DeadlineChecker.startBackgroundChecker(sharedTaskManager);
 
         // แสดงหน้า Home เป็นหน้าเริ่มต้นตอนเปิดแอปพลิเคชัน
         btnHome.doClick();

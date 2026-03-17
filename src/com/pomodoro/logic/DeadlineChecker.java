@@ -1,11 +1,19 @@
 package com.pomodoro.logic;
 
+import com.pomodoro.model.Priority;
 import com.pomodoro.model.Task;
 import com.pomodoro.model.TaskStatus;
+import com.pomodoro.ui.MenuUI.settingMenuDesign;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 
 // ตัวตรวจสอบและแจ้งเตือนเวลางานถึงกำหนด แยกออกมาเพื่อให้หน้าตั้งค่าเปิดปิดได้ง่าย
@@ -36,11 +44,11 @@ public class DeadlineChecker {
             if (t.getReminderTime() == null) {
                 // ถ้าไม่มี ReminderTime ให้เช็คข้ามวันจาก DueDate
                 if (t.getDueDate() != null) {
-                    java.util.Calendar cal = java.util.Calendar.getInstance();
+                    Calendar cal = Calendar.getInstance();
                     cal.setTime(t.getDueDate());
-                    cal.set(java.util.Calendar.HOUR_OF_DAY, 23);
-                    cal.set(java.util.Calendar.MINUTE, 59);
-                    cal.set(java.util.Calendar.SECOND, 59);
+                    cal.set(Calendar.HOUR_OF_DAY, 23);
+                    cal.set(Calendar.MINUTE, 59);
+                    cal.set(Calendar.SECOND, 59);
                     
                     if (cal.getTimeInMillis() < nowMillis) {
                         String alertKey = t.getId() + "_LATE_DUE";
@@ -59,7 +67,7 @@ public class DeadlineChecker {
             
             // แปลงความห่างเป็นนาที (ค่าบวก = ยังไม่ถึงเวลา, ค่าลบ = เลยเวลามาแล้ว)
             int diffMinutes = (int) (diffMillis / (60 * 1000));
-            int beforeMin = com.pomodoro.ui.MenuUI.settingMenuDesign.DEFAULT_NOTIFY_BEFORE_DEADLINE_MINUTES;
+            int beforeMin = settingMenuDesign.DEFAULT_NOTIFY_BEFORE_DEADLINE_MINUTES;
             
             String stage = null;
             String stageMessage = null;
@@ -122,11 +130,11 @@ public class DeadlineChecker {
         if (alerts == null || alerts.isEmpty()) return;
 
         // Sorting by Priority (High = 0, Medium = 1, Low = 2)
-        alerts.sort(new java.util.Comparator<AlertData>() {
+        alerts.sort(new Comparator<AlertData>() {
             @Override
             public int compare(AlertData a, AlertData b) {
-                int levelA = com.pomodoro.model.Priority.getLevel(a.task.getPriority());
-                int levelB = com.pomodoro.model.Priority.getLevel(b.task.getPriority());
+                int levelA = Priority.getLevel(a.task.getPriority());
+                int levelB = Priority.getLevel(b.task.getPriority());
                 return Integer.compare(levelA, levelB);
             }
         });
@@ -162,8 +170,8 @@ public class DeadlineChecker {
 
     // เริ่มการทำงานระบบตรวจจับเวลาในพื้นหลัง (Background) ถี่ยิบทุก 5 วิ
     public static void startBackgroundChecker(final TaskManager taskManager) {
-        javax.swing.Timer timer = new javax.swing.Timer(5000, new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+        Timer timer = new Timer(5000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 // ดึงค่าอัปเดตล่าสุดจาก SettingLogic ว่าผู้ใช้ติ๊กเปิดแจ้งเตือนไว้หรือไม่
                 boolean isNotifyEnabled = SettingLogic.getInstance().isNotifyDeadline();
                 checkAndAlert(taskManager.getActiveTasks(), isNotifyEnabled);

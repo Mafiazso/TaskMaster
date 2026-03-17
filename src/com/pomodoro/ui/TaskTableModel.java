@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -35,7 +36,7 @@ public class TaskTableModel extends JScrollPane {
         };
 
         table = new JTable(model);
-        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setViewportView(table);
     }
 

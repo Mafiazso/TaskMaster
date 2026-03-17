@@ -3,6 +3,7 @@ package com.pomodoro.ui.MenuUI;
 import java.awt.Color;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -82,6 +83,7 @@ public class homeMenuDesign extends JPanel {
         focusLabel.setBounds(10, 390, 300, 28);
         add(focusLabel);
 
+        // สถิติของงาน
         JPanel statsPanel = new JPanel();
         statsPanel.setBorder(BorderFactory.createEtchedBorder());
         statsPanel.setBounds(10, 425, 726, 100);
@@ -100,7 +102,12 @@ public class homeMenuDesign extends JPanel {
 
         reloadHome();
     }
-
+    
+    //======================================================
+    // METHOD FOR UI
+    //======================================================
+    
+    // เมธอดสำหรับสร้าง Label เริ่มต้นของค่าสถิติของงานต่างๆ
     private JLabel createStatValueLabel() {
         JLabel valLabel = new JLabel("0");
         valLabel.setFont(new Font("Tahoma", Font.BOLD, 22));
@@ -109,10 +116,11 @@ public class homeMenuDesign extends JPanel {
         return valLabel;
     }
 
+    // เมธอดเพิ่มค่าสถิติของงานต่างๆ
     private void addStat(JPanel parent, String label, JLabel valLabel) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        card.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); //padding
 
         JLabel lbl = new JLabel(label);
         lbl.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -123,29 +131,39 @@ public class homeMenuDesign extends JPanel {
         parent.add(card);
     }
 
+    //======================================================
+    // LOGIC HOME MENU
+    //======================================================
+    
+    
+    // เมธอดสำหรับรีเซฟหน้าโฮม เพื่อให้แสดงสถานะปัจจุบันให้ถูกต้อง
     public void reloadHome() {
-        todayModel.setRowCount(0);
+        todayModel.setRowCount(0); // clear ตาราง
         upModel.setRowCount(0);
 
-        Date today = new Date();
+        Date today = new Date(); //เวลาปัจจุบัน
         Calendar cal = Calendar.getInstance();
         cal.setTime(today);
+        
+        //เวลาเริ่มต้น วันที่เดิม 00:00:00
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         Date startOfToday = cal.getTime();
 
+        //เวลาสิ้นสุด วันที่เดิม 23:59:59
         cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
         Date endOfToday = cal.getTime();
-
+        
+        //เวลา วันที่ปัจจุบัน + 7วัน
         cal.add(Calendar.DAY_OF_MONTH, 7);
-        Date sevenDays = cal.getTime();
+        Date sevenDays = cal.getTime(); // เช่น 16 March 2026 --> 23 March 2026
 
-        List<Task> todayTasks = new java.util.ArrayList<Task>();
-        List<Task> upcomingTasks = new java.util.ArrayList<Task>();
+        List<Task> todayTasks = new ArrayList<Task>();
+        List<Task> upcomingTasks = new ArrayList<Task>();
 
         long totalActiveCount = 0;
         long totalDoneCount = 0;

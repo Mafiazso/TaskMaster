@@ -1,6 +1,9 @@
 package com.pomodoro.ui.MenuUI;
 
 import java.awt.FlowLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -10,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 
 import com.pomodoro.logic.TaskManager;
 import com.pomodoro.model.Task;
@@ -36,8 +40,8 @@ public class trashMenuDesign extends JPanel {
 
         // เมนูคลิกขวา
         JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem menuRestore = new JMenuItem("♻️ กู้คืนงาน");
-        JMenuItem menuDelete = new JMenuItem("🗑️ ลบถาวร");
+        JMenuItem menuRestore = new JMenuItem("กู้คืนงาน");
+        JMenuItem menuDelete = new JMenuItem("ลบถาวร");
         popupMenu.add(menuRestore);
         popupMenu.add(menuDelete);
 
@@ -78,7 +82,7 @@ public class trashMenuDesign extends JPanel {
             }
 
             private void handleViewportPopup(MouseEvent e) {
-                java.awt.Point pt = javax.swing.SwingUtilities.convertPoint(
+                Point pt = SwingUtilities.convertPoint(
                         tableModel.getViewport(), e.getPoint(), rawTable);
                 int row = rawTable.rowAtPoint(pt);
                 if (row >= 0)
@@ -88,13 +92,13 @@ public class trashMenuDesign extends JPanel {
         });
 
         // เชื่อมปุ่มกด
-        menuRestore.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+        menuRestore.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 doRestore(rawTable);
             }
         });
-        menuDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+        menuDelete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 doDelete(rawTable);
             }
         });
@@ -112,18 +116,22 @@ public class trashMenuDesign extends JPanel {
         JButton restoreBtn = new JButton("กู้คืนงาน");
         btnPanel.add(restoreBtn);
 
-        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+        deleteBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 doDelete(rawTable);
             }
         });
-        restoreBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+        restoreBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 doRestore(rawTable);
             }
         });
     }
-
+    
+    // =====================================================================
+    // LOGIC
+    // =====================================================================
+    
     // คำสั่งส่วนกลางที่ใช้ร่วมกันทั้งปุ่มกดและเมนูคลิกขวา
     private void doDelete(JTable rawTable) {
         int row = rawTable.getSelectedRow();
@@ -136,7 +144,7 @@ public class trashMenuDesign extends JPanel {
                 this,
                 "ลบงาน \"" + selected.getTitle() + "\" ถาวร? ไม่สามารถกู้คืนได้",
                 "ยืนยันการลบถาวร",
-                JOptionPane.YES_NO_OPTION,
+                JOptionPane.YES_NO_OPTION, // Yes = 0 , No = 1
                 JOptionPane.WARNING_MESSAGE);
         if (confirm == JOptionPane.YES_OPTION) {
             taskManager.deleteForever(selected);
@@ -152,7 +160,7 @@ public class trashMenuDesign extends JPanel {
             return;
         }
         taskManager.restoreTask(selected);
-        taskManager.updateTask(selected);
+        taskManager.updateTask(selected); // DB
         tableModel.reloadTrashTable();
         JOptionPane.showMessageDialog(this, "กู้คืนงาน \"" + selected.getTitle() + "\" เรียบร้อย!");
     }

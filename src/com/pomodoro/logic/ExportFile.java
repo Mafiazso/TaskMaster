@@ -9,23 +9,24 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ExportFile {
-
-    // เปลี่ยนมาคืนค่าเป็น String เพื่อส่งที่อยู่ไฟล์กลับไปให้ UI
+	
     public static String exportData(TaskManager taskManager) {
         // ชื่อไฟล์ที่จะสร้าง
-        String filename = "exported_tasks.txt"; 
+        String filename = "export_tasks.txt"; 
         File file = new File(filename);
 
         try {
-            // เช็คว่ามีไฟล์นี้อยู่แล้วหรือยัง ถ้ายังไม่มีให้สร้างไฟล์เปล่าๆ ขึ้นมาใหม่ทันที
+            // เช็คว่ามีไฟล์นี้อยู่แล้วหรือยัง? ถ้ายังไม่มีให้สร้างไฟล์ขึ้นมาใหม่
             if (!file.exists()) {
                 file.createNewFile();
             }
 
             // เริ่มเขียนข้อมูลลงไฟล์
-            PrintWriter writer = new PrintWriter(new FileWriter(file));
+            FileWriter fileWriter = new FileWriter(file);
+            PrintWriter writer = new PrintWriter(fileWriter);
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
+            // เขียน Header
             writer.println("=========================================");
             writer.println("          TASK MASTER EXPORT DATA        ");
             writer.println("=========================================");
@@ -37,6 +38,7 @@ public class ExportFile {
             List<Task> activeTasks = taskManager.getActiveTasks();
             writeTasksToFile(writer, activeTasks, sdf);
 
+            // เว้นวรรค
             writer.println();
             
             // --- ส่วนที่ 2: ข้อมูลงานในถังขยะ (Trash Tasks) ---
@@ -57,14 +59,16 @@ public class ExportFile {
         }
     }
 
-    // ฟังก์ชันย่อยสำหรับจัดรูปแบบข้อความของแต่ละงาน (เหมือนเดิม)
     private static void writeTasksToFile(PrintWriter writer, List<Task> tasks, SimpleDateFormat sdf) {
-        if (tasks.isEmpty()) {
+        
+    	// เช็คว่าไฟล์ว่างมั้ย
+    	if (tasks.isEmpty()) {
             writer.println(" - ไม่มีข้อมูลในส่วนนี้ - ");
             return;
         }
 
         for (Task task : tasks) {
+        	// ข้อมูลของ Task
             writer.println("ชื่องาน: " + task.getTitle());
             writer.println("รายละเอียด: " + (task.getDescription() != null && !task.getDescription().isEmpty() ? task.getDescription() : "-"));
             writer.println("ความสำคัญ: " + task.getPriority());
@@ -72,7 +76,7 @@ public class ExportFile {
             writer.println("กำหนดส่ง: " + (task.getDueDate() != null ? sdf.format(task.getDueDate()) : "-"));
             writer.println("สถานะ: " + task.getStatus());
             
-            // ดึงข้อมูลการทำ Pomodoro
+            // ข้อมูลของ Pomodoro
             int focusSeconds = task.getTotalFocusTime();
             int focusMins = focusSeconds / 60;
             int focusSecs = focusSeconds % 60;

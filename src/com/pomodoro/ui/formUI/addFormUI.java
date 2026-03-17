@@ -2,8 +2,11 @@ package com.pomodoro.ui.formUI;
 
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -142,14 +145,14 @@ public class addFormUI extends JDialog {
         JButton cancelBtn = new JButton("ยกเลิก");
         btnPanel.add(cancelBtn);
 
-        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+        cancelBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
 
-        saveBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+        saveBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
             String title = nameField.getText().trim();
             if (title.isEmpty()) {
                 JOptionPane.showMessageDialog(addFormUI.this, "กรุณาใส่ชื่องาน", "แจ้งเตือน", JOptionPane.WARNING_MESSAGE);
@@ -164,7 +167,7 @@ public class addFormUI extends JDialog {
             }
 
             // แปลงวันที่
-            java.util.Date dueDate = null;
+            Date dueDate = null;
             String dueDateStr = dueDateField.getText().trim();
             if (!dueDateStr.isEmpty()) {
                 try {
@@ -179,7 +182,7 @@ public class addFormUI extends JDialog {
             }
 
             // รวมวันที่และเวลาแจ้งเตือนเข้าด้วยกัน
-            java.util.Date reminder = null;
+            Date reminder = null;
             String notiTimeStr = notiTimeField.getText().trim();
             if (!notiTimeStr.isEmpty()) {
                 if (dueDateStr.isEmpty()) {
