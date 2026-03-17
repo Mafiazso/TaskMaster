@@ -1,14 +1,12 @@
-<<<<<<< HEAD
-- แก้ UI ใหม่
-=======
-Menu :
-- Task Menu
-- Trash Menu
-- Setting Menu
+TaskMaster : Java Final-Project
+เป็นโปรแกรมที่ถูกสร้างขึ้นมาสำหรับโปรเจกต์มหาลัยที่ต้องการช่วยผู้คน ที่มีปัญหาจัดการเวลาและงาน โดยจะมีฟังก์ชันหลักๆ คือ To-do-list , Pomodoro โดยในที่นี้มีการบันทึกข้อมูลลง Database , File txt
 
-Feature :
-- To-do list 
-- Pomodoro
-- Export file
-- Database
->>>>>>> upstream/main
+Menu
+- Home
+  แสดงข้อมูลต่างๆ
+- Task
+  หน้าเพิ่มงานและแสดงงานทั้งหมด บอกดีเทลต่างๆของงาน
+- Trash
+  เมื่อผู้ใช้ลบงานในหน้า taskMenu งานนั้นๆจะมาอยู่ใน Trash เพื่อรอการยืนยันการถูกลบอีกครั้ง
+- Setting
+  หน้าเมนูตั้งค่าต่างๆ ทั้ง pomodoro , notification ของโปรแกรม
